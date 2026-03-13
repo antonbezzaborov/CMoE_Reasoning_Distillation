@@ -132,60 +132,92 @@
 
 ```
 CMoE_Reasoning_Distillation/
-├── data_processing/                        # Обработка и подготовка данных
-│   ├── clean_answer_qwen14b.ipynb       # Очистка ответов Qwen14B
-│   ├── clean_answer_qwen235b.ipynb      # Очистка ответов Qwen235B
-│   ├── json_add_domain_subject.ipynb    # Добавление доменов и предметов
-│   └── jsons_merge.ipynb                # Объединение JSON файлов
 │
-├── evaluation/                          # Результаты оценки моделей
-│   ├── only_correct_eval_results_math_cs_qwen14b.jsonl
-│   ├── only_correct_eval_results_natural_sciences_qwen14b.jsonl
-│   ├── only_correct_eval_results_other_qwen14b.jsonl.jsonl
-│   └── only_correct_eval_results_social_humanities_qwen14b.jsonl
+├── data/                                         # Данные
+│   ├── raw/                                      # Исходные (ruMMLU)
+│   ├── generated/                                # Сырые генерации от LLM
+│   │   ├── qwen235b/                             # Данные рассуждений от Qwen3-235B
+│   │   │   ├── category_1_math_cs_qwen.jsonl
+│   │   │   ├── category_2_natural_sciences_qwen.jsonl
+│   │   │   ├── category_3_social_humanities_qwen.jsonl
+│   │   │   └── category_4_other_qwen.jsonl
+│   │   └── llama70b/                             # Данные рассуждений от Llama3.3-70B
+│   │       ├── category_1_math_cs_llama.jsonl
+│   │       ├── category_2_natural_sciences_llama.jsonl
+│   │       ├── category_3_social_humanities.jsonl
+│   │       └── category_4_other_llama.jsonl
+│   │
+│   └── processed/                                 # Очищенные и размеченные данные
+│       ├── by_domain/                             # Разбивка по доменам после очистки
+│       └── for_training/                          # Финальные датасеты для обучения
 │
-├── inference/                           # Инференс обученных моделей
-│   ├── qdrant_inference.ipynb           # Инференс модели с rag
-│   ├── qwen1.7b_inference.ipynb          
-│   └── qwen_4b_inference.ipynb
+├── notebooks/                                     # Ноутбуки
+│   ├── 01_data_preparation/                       # Подготовка и очистка данных
+│   │   ├── clean_answer_qwen14b.ipynb             # Очистка ответов Qwen14B
+│   │   ├── clean_answer_qwen235b.ipynb            # Очистка ответов Qwen235B
+│   │   ├── json_add_domain_subject.ipynb          # Добавление доменов и предметов
+│   │   └── jsons_merge.ipynb                      # Объединение JSON файлов
+│   │
+│   ├── 02_generation/                             # Генерация рассуждений
+│   │   └── reasoning_data_generation.ipynb
+│   │
+│   ├── 03_training/                                # Обучение моделей
+│   │   ├── autoregressive/                         # Авторегрессионное обучение
+│   │   │   ├── llama_8b_train.ipynb
+│   │   │   └── qwen_14b_train.ipynb
+│   │   └── seq2seq/                                # Seq2seq обучение
+│   │       └── seq2seq_train.ipynb
+│   │
+│   ├── 04_evaluation/                              # Инференс обученных моделей
+│   │   ├── qwen_4b_inference.ipynb                 # Инференс модели Qwen-4B
+│   │   ├── qwen1.7b_inference.ipynb                # Инференс модели Qwen-1.7B
+│   │   ├── qdrant_inference.ipynb                  # Инференс модели с RAG
+│   │   └── (сюда же можно добавить ноутбуки для подсчёта метрик)
+│   │
+│   └── 05_alternative_approaches/                  # Альтернативные гипотезы
+│       ├── kard/
+│       │   ├── qdrant_generation.ipynb             # Подключение RAG
+│       │   └── qdrant_tuning.ipynb                 # Обучение модели с RAG
+│       ├── yandex_gpt/
+│       │   ├── yagpt.py
+│       │   └── results_yandex_gpt.jsonl
+│       └── t-pro/
+│           ├── T-pro-2.0-generation.py
+│           └── config.yaml
 │
-├── llama70b/                            # Данные рассуждений от Llama3.3-70B
-│   ├── category_1_math_cs_llama.jsonl
-│   ├── category_2_natural_sciences_llama.jsonl
-│   ├── category_3_social_humanities.jsonl
-│   └── category_4_other_llama.jsonl
+├── src/                                            # Python-модули
+│   ├── data/                                       # Скрипты для загрузки/обработки
+│   ├── models/                                     # Скрипты для обучения
+│   ├── evaluation/                                 # Метрики и оценка
+│   └── utils/                                      # Вспомогательные функции
 │
-├── qwen235b/                            # Данные рассуждений от Qwen3-235B
-│   ├── category_1_math_cs_qwen.jsonl
-│   ├── category_2_natural_sciences_qwen.jsonl
-│   ├── category_3_social_humanities_qwen.jsonl
-│   ├── category_4_other_qwen.jsonl
-│   └── reasoning_data_generation.ipynb
+├── models/                                         # Веса обученных моделей
+│   ├── qwen14b_domain_experts/
+│   ├── llama8b_domain_experts/
+│   └── final/
 │
-├── train/                               # Обучение моделей
-│   ├── autoregression/                  # Авторегрессионное обучение
-    │   ├── llama_8b_train.ipynb
-│   │   └── qwen_14b_train.ipynb
-│   └── seq2seq/                         # Seq2seq обучение
-│       └── seq2seq_train.ipynb
+├── results/                                        # Результаты экспериментов
+│   ├── logs/                                       # Логи обучения
+│   ├── metrics/                                    # Результаты оценки моделей
+│   │   ├── only_correct_eval_results_math_cs_qwen14b.jsonl
+│   │   ├── only_correct_eval_results_natural_sciences_qwen14b.jsonl
+│   │   ├── only_correct_eval_results_other_qwen14b.jsonl
+│   │   └── only_correct_eval_results_social_humanities_qwen14b.jsonl
+│   └── figures/                                    # Графики
 │
-├── images/                              # Изображения для документации
+├── images/                                         # Изображения для документации
 │   ├── baseline.png
 │   ├── cmoe_architecture.png
 │   ├── kard_arch.png
 │   ├── results_comparison.png
 │   ├── ru_llm.png
 │   └── seq2seq_res.png
-├── kard/
-│   ├── qdrant_inference.ipynb           # Инференс модели с rag
-│   ├── qdrant_generation.ipynb          # Подключение rag
-│   └── qdrant_tuning.ipynb              # Обучение модели с rag
-├── yandex_gpt/
-│   ├── results_yandex_gpt.jsonl
-│   └── yagpt.py
-├── t-pro/
-│   ├── T-pro-2.0-generation.py
-│   └── config.yaml
 │
-└── README.md
+├── docs/                                           # Документация
+│   ├── presentation/                               # Материалы для презентаций
+│   └── reports/                                    # Отчёты
+│
+├── requirements.txt                               # Зависимости
+├── .gitignore                                     # Что не заливать в git
+└── README.md                                      # Описание проекта
 ```
