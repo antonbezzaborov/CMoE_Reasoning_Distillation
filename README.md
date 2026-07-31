@@ -1,4 +1,11 @@
-# Дистилляция ризонинга в малые языковые модели
+<p align="center">
+    <img src="https://img.shields.io/badge/Python-3.10+-blue.svg?logo=python&logoColor=white" alt="Python">
+    <img src="https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?logo=PyTorch&logoColor=white" alt="PyTorch">
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Transformers-FFD21E.svg" alt="Hugging Face">
+    <img src="https://img.shields.io/badge/Qdrant-Vector%20DB-FD1660.svg?logo=qdrant&logoColor=white" alt="Qdrant">
+</p>
+
+# Cascade Mixture of Experts for Reasoning Distillation
 
 ## Описание проекта
 
